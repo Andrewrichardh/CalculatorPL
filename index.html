@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Global Goals Calculator — Pepkor Lifestyle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@400;500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#092A2E;--panel:#0B2E33;--lime:#A4CE39;--teal:#64C3DD;--muted:#9FB6B4;--dim:#B4CAC8;--line:rgba(255,255,255,.16)}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:#fff;font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:clamp(18px,3vw,36px)}
+  .mono{font-family:'IBM Plex Mono',monospace}
+  header{display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px;padding-bottom:20px;border-bottom:1px solid var(--line)}
+  header img{display:block;width:auto}
+  h1{margin:0;font:800 clamp(28px,4vw,44px)/1.05 'Montserrat',sans-serif;letter-spacing:-.035em}
+  .lead{margin:12px 0 0;max-width:56ch;font-size:15.5px;line-height:1.6;color:var(--dim)}
+  .card{margin-top:26px;border:1px solid rgba(255,255,255,.18)}
+  .adder{padding:20px clamp(16px,2.4vw,26px);display:flex;flex-wrap:wrap;align-items:flex-end;gap:14px;border-bottom:1px solid var(--line)}
+  label span.lab{display:block;font:600 10px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--dim);margin-bottom:10px}
+  select{width:100%;background:var(--panel);border:1px solid rgba(255,255,255,.26);padding:12px 10px;font:600 15px/1.2 'Montserrat',sans-serif;color:#fff;outline:none}
+  input{background:transparent;border:0;border-bottom:1px solid rgba(255,255,255,.26);padding:4px 0;color:#fff;outline:none;font-family:'IBM Plex Mono',monospace}
+  input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+  button{cursor:pointer;font-family:'Montserrat',sans-serif}
+  .btn{padding:14px 22px;border:0;background:var(--lime);color:var(--bg);font:700 11.5px/1 'Montserrat',sans-serif;letter-spacing:.1em;text-transform:uppercase}
+  .btn-ghost{padding:14px 20px;border:1px solid rgba(255,255,255,.3);background:transparent;color:#fff;font:700 11.5px/1 'Montserrat',sans-serif;letter-spacing:.1em;text-transform:uppercase}
+  .btn-text{padding:14px;border:0;background:none;color:var(--muted);font:700 11.5px/1 'Montserrat',sans-serif;letter-spacing:.1em;text-transform:uppercase}
+  .thead,.row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px clamp(16px,2.4vw,26px)}
+  .thead{background:var(--panel);border-bottom:1px solid rgba(255,255,255,.14);font:600 10px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--muted)}
+  .row{border-bottom:1px solid rgba(255,255,255,.1);flex-wrap:wrap}
+  .c-name{flex:1 1 200px;min-width:0}
+  .c-qty{width:70px;display:flex;align-items:center;justify-content:center;gap:6px}
+  .c-val{width:104px;text-align:right;font:600 13px/1 'IBM Plex Mono',monospace}
+  .c-pay{width:110px;text-align:right;font:700 14px/1 'IBM Plex Mono',monospace;color:var(--teal)}
+  .c-x{width:22px;background:none;border:0;color:var(--muted);font:600 13px/1 'IBM Plex Mono',monospace}
+  .step{width:22px;height:22px;border:0;font:600 13px/1 sans-serif}
+  .totals{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:1px;background:rgba(255,255,255,.14);border-top:1px solid var(--line)}
+  .tile{background:var(--panel);padding:20px clamp(16px,2.4vw,24px)}
+  .tile .k{font:600 10px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--dim)}
+  .tile .v{margin-top:12px;font:600 clamp(18px,2.2vw,26px)/1 'IBM Plex Mono',monospace}
+  .bar{margin-top:12px;height:8px;background:rgba(255,255,255,.12)}
+  .bar>i{display:block;height:100%;background:var(--lime);width:0;transition:width .25s ease}
+  .foot{margin-top:26px;padding-top:18px;border-top:1px solid var(--line);font-size:12.5px;line-height:1.6;color:var(--muted)}
+  @media print{
+    @page{size:A4 portrait;margin:14mm}
+    body{background:#fff}
+    *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+    .no-print{display:none!important}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <img src="assets/gifs-mark-white.png" alt="GIFS" style="height:24px">
+    <img src="assets/global-goals-white.png" alt="Global Goals 2030" style="height:30px">
+    <span style="width:1px;height:20px;background:rgba(255,255,255,.28)"></span>
+    <span style="display:inline-flex;background:#fff;padding:5px 10px"><img src="assets/pepkor-lifestyle-logo.png" alt="Pepkor Lifestyle" style="height:20px"></span>
+    <span class="mono" style="margin-left:auto;font-size:11px;font-weight:600;letter-spacing:.16em;color:var(--muted)">COHORT 3 RATES</span>
+  </header>
+
+  <div style="margin-top:clamp(24px,3vw,36px)">
+    <h1>Scholarship calculator</h1>
+    <p class="lead">Add as many qualifications as you need. The scholarship discount applies the moment you add a line.</p>
+  </div>
+
+  <div class="card">
+    <div class="adder no-print">
+      <label style="flex:3 1 260px;min-width:0">
+        <span class="lab">QUALIFICATION</span>
+        <select id="pick"></select>
+      </label>
+      <label style="flex:0 0 110px">
+        <span class="lab">LEARNERS</span>
+        <input id="qty" type="number" min="1" step="1" value="1" style="width:100%;font-size:22px;font-weight:700;padding-bottom:10px">
+      </label>
+      <button class="btn" id="add">Add</button>
+
+      <label id="variantWrap" style="flex:1 1 100%;display:none">
+        <span class="lab" id="variantTitle" style="margin:6px 0 10px"></span>
+        <select id="variant"></select>
+      </label>
+
+      <div id="customWrap" style="flex:1 1 100%;display:none;flex-wrap:wrap;gap:14px;padding-top:6px">
+        <label style="flex:2 1 200px;min-width:0"><span class="lab">NAME</span>
+          <input id="cLabel" placeholder="Qualification we must source" style="width:100%;font:700 14px/1.2 'Montserrat',sans-serif">
+        </label>
+        <label style="flex:1 1 130px"><span class="lab">TOTAL VALUE (R)</span>
+          <input id="cTotal" type="number" min="0" step="1000" value="50000" style="width:100%;font-size:15px;font-weight:600">
+        </label>
+        <label style="flex:1 1 130px"><span class="lab">YOU PAY (R)</span>
+          <input id="cClient" type="number" min="0" step="1000" value="25000" style="width:100%;font-size:15px;font-weight:600;color:var(--teal)">
+        </label>
+      </div>
+    </div>
+
+    <div class="thead">
+      <span style="flex:1 1 200px">QUALIFICATION</span>
+      <span style="width:70px;text-align:center">QTY</span>
+      <span style="width:104px;text-align:right">VALUE</span>
+      <span style="width:104px;text-align:right;color:var(--lime)">DISCOUNT</span>
+      <span style="width:110px;text-align:right;color:var(--teal)">YOU PAY</span>
+      <span class="no-print" style="width:22px"></span>
+    </div>
+
+    <div id="rows"></div>
+
+    <div class="totals">
+      <div class="tile"><div class="k">LEARNERS</div><div class="v" id="tLearners" style="font-family:'Montserrat',sans-serif;font-weight:700">0</div></div>
+      <div class="tile"><div class="k">TOTAL VALUE</div><div class="v" id="tTotal">R0</div></div>
+      <div class="tile"><div class="k" style="color:var(--lime)">SCHOLARSHIP DISCOUNT</div><div class="v" id="tDiscount" style="color:var(--lime)">−R0</div><div class="mono" id="tPct" style="margin-top:8px;font-size:12px;font-weight:600;color:var(--lime)">0% off</div></div>
+      <div class="tile" style="box-shadow:inset 0 0 0 1px var(--teal)"><div class="k" style="color:var(--teal)">PEPKOR LIFESTYLE PAYS</div><div class="v" id="tClient" style="font-family:'Montserrat',sans-serif;font-weight:800;color:var(--teal)">R0</div></div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:24px;margin-top:24px">
+    <div style="flex:1 1 280px">
+      <div class="mono" style="font-size:10px;font-weight:600;letter-spacing:.14em;color:var(--dim)">YOUR SKILLS BUDGET (R)</div>
+      <input id="budget" type="number" min="0" step="100000" value="9000000" style="width:100%;margin-top:10px;font-size:22px;font-weight:600;padding-bottom:8px;border-bottom-color:rgba(255,255,255,.3)">
+      <div class="bar"><i id="budgetBar"></i></div>
+      <div class="mono" id="budgetNote" style="margin-top:10px;font-size:12px;font-weight:600;color:var(--lime)">Set a budget to compare</div>
+    </div>
+    <div class="no-print" style="flex:1 1 280px;display:flex;flex-wrap:wrap;gap:12px">
+      <button class="btn-ghost" id="print">Print / save PDF</button>
+      <button class="btn-text" id="clear">Clear</button>
+      <a class="btn" href="https://globalgoals-2030.com/" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex;align-items:center">Request a proposal</a>
+    </div>
+  </div>
+
+  <div class="foot">Cohort 3 rates. All amounts exclusive of VAT. International pricing subject to prevailing exchange rates. Costings confirmed on quotation. Global Goals 2030 · Africa Scholarship, aligned to UN SDG 4.</div>
+</div>
+
+<script>
+// ---------------------------------------------------------------------------
+// RATE CARD — Cohort 3. total = full qualification value, client = what the
+// employer pays. Discount is the difference. Edit these numbers to re-price.
+// variants = optional field/concentration picker shown when that item is chosen.
+// ---------------------------------------------------------------------------
+var FIELDS = ['Business & Finance','Management','Banking','Finance','Insurance & Risk','Financial Planning','Computer Sciences','Cybersecurity'];
+
+var CATALOGUE = [
+  { key:'FETC_GM',    label:'FETC: Generic Management (learnership)', total:30000,   client:13000,  dur:'NQF 4 · 12 mo · local',
+    variants:{ title:'CONTEXTUALISE FOR', options:['Sales / Retail','Retail Operations','Credit & Value-Added Services','Contact Centre & Collections','Store & Area Management'] } },
+  { key:'FETC_STI',   label:'FETC: Short Term Insurance',  total:30000,  client:13000,  dur:'NQF 4 · 12 mo · local' },
+  { key:'FETC_LTI',   label:'FETC: Long Term Insurance',   total:30000,  client:13000,  dur:'NQF 4 · 12 mo · local' },
+  { key:'FETC_WM',    label:'FETC: Wealth Management',     total:30000,  client:13000,  dur:'NQF 4 · 12 mo · local' },
+  { key:'QCTO',       label:'Occupational Certificate (QCTO)', total:35000, client:16000, dur:'NQF 4–6 · 12–36 mo · local',
+    variants:{ title:'CHOOSE THE OCCUPATION', options:['Insurance Claims Administrator','Long Term Insurance Advisor','Office Supervisor','Office Administrator','Management Assistant','Contact Centre Manager','Project Management','Organisational Risk Manager','Health Care Benefits Advisor','Employee & Pension Benefits Advisor'] } },
+  { key:'LOCAL_BCOM', label:'Bachelors: Business Marketing', total:70000, client:16000, dur:'NQF 7 · 36 mo · local' },
+  { key:'HC',         label:'Higher Certificate',   total:50000,  client:16000,  dur:'18 mo · international',
+    variants:{ title:'CHOOSE THE FIELD', options:['Customer Service','Contact Centre Operations','Leadership','Broker Development','Project Management','Financial Services'].concat(FIELDS) } },
+  { key:'ADVCERT',    label:'Advanced Certificate', total:50000,  client:20000,  dur:'30 mo · international',
+    variants:{ title:'CHOOSE THE FIELD', options:FIELDS } },
+  { key:'DIP',        label:'Diploma',              total:50000,  client:30000,  dur:'42 mo · international',
+    variants:{ title:'CHOOSE THE FIELD', options:['Insurance','Financial Regulated Planning'].concat(FIELDS) } },
+  { key:'AML',        label:'Global Certificate in Anti Money Laundering', total:50000, client:16000, dur:'3 mo · FIBA/FIU' },
+  { key:'CII_AWARD',  label:'CII Award — General Insurance / Customer Service', total:50000, client:15000, dur:'2 mo · CII UK' },
+  { key:'CII_CERT',   label:'CII Certificate in Insurance & Financial Services', total:50000, client:25000, dur:'4 mo · CII UK' },
+  { key:'CII_LP',     label:'CII Certificate in Financial Services (LP1–LP3)', total:50000, client:25000, dur:'6 mo · CII UK' },
+  { key:'CII_INS',    label:'CII Certificate in Insurance', total:50000, client:40000, dur:'6 mo · CII UK' },
+  { key:'CII_PARA',   label:'CII Certificate in Paraplanning', total:50000, client:35000, dur:'12 mo · CII UK' },
+  { key:'CII_DIP',    label:'CII Diploma in Insurance', total:50000, client:45000, dur:'24 mo · CII UK' },
+  { key:'CII_FRP',    label:'CII Diploma in Financial Regulated Planning', total:50000, client:45000, dur:'24 mo · CII UK' },
+  { key:'BSC',        label:'BSc',   total:680000,  client:210000, dur:'42 mo · R60,000 per year',
+    variants:{ title:'CHOOSE THE DEGREE', options:['Business with Finance','Computer Science','Cybersecurity'] } },
+  { key:'PGDIP',      label:'Postgraduate Diploma', total:680000, client:65000, dur:'12 mo · R65,000 per year',
+    variants:{ title:'CHOOSE THE FIELD', options:['Business Administration','Organisational Risk Management','Governance','Financial Planning'] } },
+  { key:'MBA',        label:'MBA',   total:1350000, client:99000,  dur:'18 mo · R66,000 per year',
+    variants:{ title:'CHOOSE THE CONCENTRATION', options:['General Management','Finance','Marketing & Sales','Strategy & Leadership','Digital & Innovation'] } },
+  { key:'DBA',        label:'Doctor of Business Administration', total:1800000, client:240000, dur:'36 mo · R80,000 per year',
+    variants:{ title:'CHOOSE THE SPECIALISATION', options:['General Management','Finance & Investment','Strategic Leadership','Marketing & Innovation'] } }
+];
+
+var rows = [], nextId = 1;
+var money = function (v) { return 'R' + Math.round(Number(v) || 0).toLocaleString('en-US'); };
+var $ = function (id) { return document.getElementById(id); };
+var itemFor = function (key) { return CATALOGUE.filter(function (i) { return i.key === key; })[0]; };
+
+// build the qualification dropdown
+$('pick').innerHTML = '<option value="">— Select a qualification —</option>'
+  + CATALOGUE.map(function (i) { return '<option value="' + i.key + '">' + i.label + ' · ' + money(i.total) + '</option>'; }).join('')
+  + '<option value="__custom">Custom — not listed, we source it</option>';
+
+$('pick').addEventListener('change', function () {
+  var item = itemFor(this.value);
+  $('customWrap').style.display = this.value === '__custom' ? 'flex' : 'none';
+  if (item && item.variants) {
+    $('variantTitle').textContent = item.variants.title;
+    $('variant').innerHTML = item.variants.options.map(function (o) { return '<option>' + o + '</option>'; }).join('');
+    $('variantWrap').style.display = 'block';
+  } else {
+    $('variantWrap').style.display = 'none';
+  }
+});
+
+$('add').addEventListener('click', function () {
+  var key = $('pick').value;
+  if (!key) return;
+  var qty = Math.max(1, Number($('qty').value) || 1);
+
+  if (key === '__custom') {
+    rows.push({ id: nextId++, label: $('cLabel').value || 'Custom qualification', detail: 'Sourced for you',
+                total: Number($('cTotal').value) || 0, client: Number($('cClient').value) || 0, qty: qty });
+    return render();
+  }
+
+  var item = itemFor(key);
+  var label = item.variants ? item.label + ' — ' + $('variant').value : item.label;
+  var existing = rows.filter(function (r) { return r.label === label; })[0];
+  if (existing) existing.qty += qty;
+  else rows.push({ id: nextId++, label: label, detail: item.dur, total: item.total, client: item.client, qty: qty });
+  render();
+});
+
+function bump(id, delta) {
+  rows = rows.map(function (r) { return r.id === id ? Object.assign({}, r, { qty: Math.max(0, r.qty + delta) }) : r; })
+             .filter(function (r) { return r.qty > 0; });
+  render();
+}
+
+$('budget').addEventListener('input', render);
+$('print').addEventListener('click', function () { window.print(); });
+$('clear').addEventListener('click', function () { rows = []; render(); });
+
+function render() {
+  var host = $('rows');
+  host.innerHTML = '';
+
+  if (!rows.length) {
+    host.innerHTML = '<div style="padding:26px clamp(16px,2.4vw,26px);font-size:14px;color:var(--muted)">Nothing added yet — choose a qualification above and press Add.</div>';
+  }
+
+  rows.forEach(function (r) {
+    var el = document.createElement('div');
+    el.className = 'row';
+    el.innerHTML =
+      '<div class="c-name"><div style="font:700 14.5px/1.3 \'Montserrat\',sans-serif">' + r.label + '</div>' +
+        '<div class="mono" style="margin-top:4px;font-size:11px;color:var(--muted)">' + r.detail + '</div></div>' +
+      '<div class="c-qty"><button class="step no-print" data-act="dec" style="background:rgba(255,255,255,.1);color:#fff">−</button>' +
+        '<span class="mono" style="min-width:22px;text-align:center;font-size:15px;font-weight:700">' + r.qty + '</span>' +
+        '<button class="step no-print" data-act="inc" style="background:var(--lime);color:var(--bg)">+</button></div>' +
+      '<span class="c-val">' + money(r.qty * r.total) + '</span>' +
+      '<span class="c-val" style="color:var(--lime)">−' + money(r.qty * Math.max(0, r.total - r.client)) + '</span>' +
+      '<span class="c-pay">' + money(r.qty * r.client) + '</span>' +
+      '<button class="c-x no-print" data-act="rm">✕</button>';
+    el.querySelector('[data-act=dec]').onclick = function () { bump(r.id, -1); };
+    el.querySelector('[data-act=inc]').onclick = function () { bump(r.id, 1); };
+    el.querySelector('[data-act=rm]').onclick  = function () { bump(r.id, -r.qty); };
+    host.appendChild(el);
+  });
+
+  var total    = rows.reduce(function (a, r) { return a + r.qty * r.total; }, 0);
+  var client   = rows.reduce(function (a, r) { return a + r.qty * r.client; }, 0);
+  var learners = rows.reduce(function (a, r) { return a + r.qty; }, 0);
+  var discount = Math.max(0, total - client);
+
+  $('tLearners').textContent = learners;
+  $('tTotal').textContent    = money(total);
+  $('tDiscount').textContent = '−' + money(discount);
+  $('tPct').textContent      = (total > 0 ? Math.round(discount / total * 100) : 0) + '% off';
+  $('tClient').textContent   = money(client);
+
+  var budget = Number($('budget').value) || 0;
+  var pct    = budget > 0 ? client / budget * 100 : 0;
+  var over   = budget > 0 && client > budget;
+  $('budgetBar').style.width      = Math.min(100, pct) + '%';
+  $('budgetBar').style.background = over ? '#E36464' : 'var(--lime)';
+  $('budgetNote').style.color     = over ? '#E36464' : 'var(--lime)';
+  $('budgetNote').textContent     = budget > 0
+    ? (over ? Math.round(pct) + '% of budget — over by ' + money(client - budget) : Math.round(pct) + '% of budget used')
+    : 'Set a budget to compare';
+}
+
+render();
+</script>
+</body>
+</html>
